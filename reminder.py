@@ -1,10 +1,4 @@
 #!/usr/bin/env python3
-"""
-Monthly Outstanding Balance Report Reminder
-Runs daily via Render cron job.
-Sends reminder email on the Monday of the week containing the 15th.
-"""
-
 import os, smtplib, datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -18,21 +12,11 @@ RECIPIENTS = [
     "drewyaffe@alyssagrayrealty.com",
 ]
 
-def get_reminder_date(year, month):
-    the_15th = datetime.date(year, month, 15)
-    days_since_monday = the_15th.weekday()
-    return the_15th - datetime.timedelta(days=days_since_monday)
+today = datetime.date.today()
+month_str = today.strftime("%B %Y")
+prev_month = (today.replace(day=1) - datetime.timedelta(days=1)).strftime("%B")
 
-def should_send_today():
-    today = datetime.date.today()
-    return today == get_reminder_date(today.year, today.month)
-
-def send_reminder():
-    today = datetime.date.today()
-    month_str = today.strftime("%B %Y")
-    prev_month = (today.replace(day=1) - datetime.timedelta(days=1)).strftime("%B")
-
-    body_html = f"""
+body_html = f"""
 <div style="font-family:Georgia,serif;max-width:500px;margin:0 auto;padding:24px;background:#f5f0e8">
   <div style="border-bottom:3px double #1a1410;padding-bottom:16px;margin-bottom:20px;text-align:center">
     <div style="font-family:sans-serif;font-size:36px;font-weight:900;letter-spacing:4px;line-height:1">
@@ -61,25 +45,14 @@ def send_reminder():
   </div>
 </div>"""
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"Outstanding Balance Report - {month_str} files needed"
-    msg["From"]    = GMAIL_USER
-    msg["To"]      = ", ".join(RECIPIENTS)
-    msg.attach(MIMEText(body_html, "html"))
+msg = MIMEMultipart("alternative")
+msg["Subject"] = f"Outstanding Balance Report - {month_str} files needed"
+msg["From"]    = GMAIL_USER
+msg["To"]      = ", ".join(RECIPIENTS)
+msg.attach(MIMEText(body_html, "html"))
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
-        s.login(GMAIL_USER, GMAIL_APP_PASS)
-        s.sendmail(GMAIL_USER, RECIPIENTS, msg.as_string())
+with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
+    s.login(GMAIL_USER, GMAIL_APP_PASS)
+    s.sendmail(GMAIL_USER, RECIPIENTS, msg.as_string())
 
-    print(f"Reminder sent to {', '.join(RECIPIENTS)} for {month_str}")
-
-def main():
-    if should_send_today():
-        send_reminder()
-    else:
-        today = datetime.date.today()
-        reminder = get_reminder_date(today.year, today.month)
-        print(f"Not reminder day. Next: {reminder.strftime('%A, %B %-d, %Y')}")
-
-if __name__ == "__main__":
-    main()
+print(f"Reminder sent to {', '.join(RECIPIENTS)} for {month_str}")
