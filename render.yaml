@@ -1,0 +1,12 @@
+services:
+  - type: cron
+    name: balance-report-reminder
+    runtime: python
+    schedule: "0 9 * * *"
+    buildCommand: pip install -r requirements.txt
+    startCommand: python reminder.py
+    envVars:
+      - key: GMAIL_USER
+        sync: false
+      - key: GMAIL_APP_PASS
+        sync: false
