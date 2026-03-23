@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 
 GMAIL_USER     = os.environ["GMAIL_USER"]
 GMAIL_APP_PASS = os.environ["GMAIL_APP_PASS"]
-CHAT_LINK      = "https://claude.ai/chat/fab9a4af-2461-4006-b33f-95cefbef29ef"
+CHAT_LINK      = "https://claude.ai"
 RECIPIENTS = ["lucascasamento@alyssagrayrealty.com","drewyaffe@alyssagrayrealty.com"]
 
 def get_reminder_date(year, month):
@@ -32,6 +32,15 @@ def send_reminder():
     </div>
   </div>
   <a href="{CHAT_LINK}" style="display:block;background:#1F4E79;color:white;text-align:center;padding:14px;font-size:16px;text-decoration:none;letter-spacing:2px;font-family:sans-serif;font-weight:700;margin-bottom:16px">OPEN CHAT TO DROP FILES</a>
+  <div style="background:#fffbcc;border:2px solid #e6c800;padding:16px 20px;margin-bottom:20px;font-family:sans-serif;font-size:13px;color:#1a1410;line-height:1.6">
+    <strong>Instructions for Claude:</strong><br><br>
+    I am dropping 3 files for the monthly Outstanding Balance Report at Alyssa Gray Realty. Please build the report automatically using these rules:<br><br>
+    Include only tenants where Balance is greater than 1.25x their monthly rent (match by account number from the rent roll)<br><br>
+    Sort highest balance to lowest<br><br>
+    Columns: Tenants, Unit, More than 1 month?, Balance, Responsible, Comments [current month], Comments [prev month]<br><br>
+    No row shading, left/top aligned, dark blue header and total row, Arial font<br><br>
+    Once built, email the finished Excel report to lucascasamento@alyssagrayrealty.com and drewyaffe@alyssagrayrealty.com using Gmail SMTP: user=lucascasamento33@gmail.com, app password=zfvkpooevppebuyt, smtp.gmail.com:465.
+  </div>
   <p style="font-size:13px;color:#7a7060;line-height:1.7;text-align:center">Drop the 3 files and the report will be built and emailed back automatically.</p>
   <div style="margin-top:24px;padding-top:16px;border-top:1px solid #d8d0c0;font-size:11px;color:#c8c0b0;text-align:center">Alyssa Gray Realty - {month_str}</div>
 </div>"""
